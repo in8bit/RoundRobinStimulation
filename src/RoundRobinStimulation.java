@@ -2,44 +2,31 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Queue;
-import java.util.Scanner;
+import java.util.*;
 
 public class RoundRobinStimulation {
     static List<String> str = new ArrayList<String>();
-    static ArrayList<Process> processList = new ArrayList<Process>();
+    static PriorityQueue<Process> processQueue = new PriorityQueue<Process>();
     private static FileWriter outFile;
     private static FileWriter logFile;
     private static final Scanner userInput = new Scanner(System.in);
 
-    public static void Stimulation(ArrayList<Process> processList, int quantum) throws Exception {
+    public static void Stimulation(PriorityQueue<Process> processQueue, int quantum) throws Exception {
         int clock = 0;
         Queue<Integer> readyQueue;
         Queue<Integer> iOQueue;
-        ArrayList<Integer> CPU = new ArrayList<Integer>();
-        ArrayList<Integer> IO = new ArrayList<Integer>();
-
-        for (int i = 0; i < processList.size(); i++) {
-            Process job = processList.get(i);
-            if (job.getArrivalTime() != clock) {
-                try {
-                    logFile.write(String.valueOf(clock) + " : " + "No event.\n");
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                System.out.println(clock + " : " + "No event.");
-            } else if (job.getArrivalTime() == clock) {
-                try {
-                    logFile.write(String.valueOf(clock + " : " + job.getProcessID() + " " + job.getArrivalTime() + " " + job.getStatus() + "\n"));
-
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                System.out.println(clock + " : " + job.getProcessID() + job.getArrivalTime() + job.getStatus());
+        Iterator<Process> it = processQueue.iterator();
+        while (it.hasNext()) {
+            Process job = processQueue.poll();
+            while (job.getArrivalTime() != clock) {
+                logFile.write(clock + " : " + "No event");
+                System.out.println(clock + " : " + "No event");
+                clock++;
             }
-            clock++;
+            if (job.getArrivalTime() == clock) {
+                System.out.println(clock + " : " + "At the start of " + clock + "job with process id : " + job.getProcessID() + "came");
+                clock++;
+            }
         }
         logFile.flush();
         logFile.close();
@@ -64,12 +51,12 @@ public class RoundRobinStimulation {
             quantum = userInput.nextInt();
         }
         for (int i = 0; i < str.size(); i++) {
-            processList.add(new Process(str.get(i)));
+            processQueue.add(new Process(str.get(i)));
         }
 
         outFile = new FileWriter(outputFile);
         logFile = new FileWriter(outputLOGFile);
-        Stimulation(processList, quantum);
+        Stimulation(processQueue, quantum);
     }
 
     public static File getOutputFile() throws IOException {

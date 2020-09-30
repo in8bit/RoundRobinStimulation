@@ -2,7 +2,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public class Process {
+public class Process implements Comparable<Process> {
     private int processID;
     private String status;
 
@@ -28,7 +28,7 @@ public class Process {
         String[] line = job.split(" ");
 
         processID = rand.nextInt(10000000);
-        status = "New";
+        status = "newJob";
 
         arrivalTime = Integer.parseInt(line[0]);
         numOfCPUBursts = Integer.parseInt(line[1]);
@@ -55,6 +55,7 @@ public class Process {
         avgIOWaitTime = 0;
 
     }
+
 
     public int getProcessID() {
         return processID;
@@ -156,4 +157,31 @@ public class Process {
         this.avgIOWaitTime = avgIOWaitTime;
     }
 
+
+    @Override
+    public int compareTo(Process p) {
+        //sorting by arrival time
+        if (this.getArrivalTime() > p.getArrivalTime()) {
+            return 1;
+        } else if (this.getArrivalTime() < p.getArrivalTime()) {
+            return -1;
+        } else return 0;
+
+       /*
+        //sorting by status
+        String status =this.getStatus();
+        String statusOfOtherJob = p.getStatus();
+        if (status.equals("newJob") && statusOfOtherJob.equals("blocked")|| statusOfOtherJob.equals("preempted")){
+            return 1;
+        }else if (status.equals("blocked") && statusOfOtherJob.equals("preempted")){
+            return 1;
+        }else if (statusOfOtherJob.equals("newJob")&& status.equals("blocked")|| status.equals("preempted")){
+            return -1;
+        }else if (statusOfOtherJob.equals("blocked") && status.equals("preempted")){
+            return -1;
+        }
+        else
+        return 0;
+    */
+    }
 }
