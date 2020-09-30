@@ -14,31 +14,38 @@ public class RoundRobinStimulation {
     private static FileWriter logFile;
     private static final Scanner userInput = new Scanner(System.in);
 
-    public static void Stimulation(ArrayList<Process> processList, int quantum) {
-        int counter = 0;
+    public static void Stimulation(ArrayList<Process> processList, int quantum) throws Exception {
         int clock = 0;
         Queue<Integer> readyQueue;
         Queue<Integer> iOQueue;
-        while (processList.isEmpty()) {
-            Process job = processList.get(counter);
-            while (job.getArrivalTime() != clock) {
+        ArrayList<Integer> CPU = new ArrayList<Integer>();
+        ArrayList<Integer> IO = new ArrayList<Integer>();
+
+        for (int i = 0; i < processList.size(); i++) {
+            Process job = processList.get(i);
+            if (job.getArrivalTime() != clock) {
                 try {
-                    logFile.write(clock + " : " + "no event");
-                } catch (IOException e) {
+                    logFile.write(String.valueOf(clock) + " : " + "No event.\n");
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
-            }
-            if (job.getArrivalTime() == clock) {
+                System.out.println(clock + " : " + "No event.");
+            } else if (job.getArrivalTime() == clock) {
+                try {
+                    logFile.write(String.valueOf(clock + " : " + job.getProcessID() + " " + job.getArrivalTime() + " " + job.getStatus() + "\n"));
 
-                System.out.println(clock + " : " + job.getProcessID() + "arrived at" + job.getArrivalTime());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                System.out.println(clock + " : " + job.getProcessID() + job.getArrivalTime() + job.getStatus());
             }
-            counter++;
             clock++;
         }
-
+        logFile.flush();
+        logFile.close();
     }
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws Exception {
         File outputFile = getOutputFile();                             //first command takes the output file to write the 5 unit progress to
         File inputFile = getInputFile();                               //second command gets input file to read the processes from
         if (!inputFileChecked(inputFile)) {
@@ -59,6 +66,7 @@ public class RoundRobinStimulation {
         for (int i = 0; i < str.size(); i++) {
             processList.add(new Process(str.get(i)));
         }
+
         outFile = new FileWriter(outputFile);
         logFile = new FileWriter(outputLOGFile);
         Stimulation(processList, quantum);
