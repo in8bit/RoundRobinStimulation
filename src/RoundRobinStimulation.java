@@ -5,8 +5,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-public class RoundRobinStimulation<Static> {
+public class RoundRobinStimulation {
     static List<String> str = new ArrayList<String>();
+    static List<Process> processList = new ArrayList<Process>();
     private static final Scanner userInput = new Scanner(System.in);
 
     public static void main(String[] args) {
@@ -28,11 +29,26 @@ public class RoundRobinStimulation<Static> {
             System.out.println("Please enter a quantum number more than 0.");
             quantum = userInput.nextInt();
         }
-        System.out.println("************************");
-        System.out.println("quantum : " + quantum);
         for (int i = 0; i < str.size(); i++) {
-            System.out.println("job : " + str.get(i));
+            processList.add(new Process(str.get(i)));
         }
+        //******************************************************************************testing
+        Process job1 = processList.get(0);
+        Process job2 = processList.get(1);
+        Process job3 = processList.get(2);
+
+        System.out.println("job 1 arrival time : " + job1.getArrivalTime());
+        System.out.println("job 2 arrival time : " + job2.getArrivalTime());
+        System.out.println("job 3 arrival time : " + job3.getArrivalTime());
+
+        System.out.println("job 1 cpu bursts : " + job1.getNumOfCPUBursts());
+        System.out.println("job 2 cpu bursts : " + job2.getNumOfCPUBursts());
+        System.out.println("job 3 cpu bursts : " + job3.getNumOfCPUBursts());
+
+        System.out.println("job 1 cpu burst list : " + job1.getCpuburstList());
+        System.out.println("job 2 cpu burst list : " + job2.getCpuburstList());
+        System.out.println("job 3 cpu burst list : " + job3.getCpuburstList());
+        //******************************************************************************
     }
 
     public static File getOutputFile() {
