@@ -1,23 +1,50 @@
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Queue;
 import java.util.Scanner;
 
 public class RoundRobinStimulation {
     static List<String> str = new ArrayList<String>();
-    static List<Process> processList = new ArrayList<Process>();
+    static ArrayList<Process> processList = new ArrayList<Process>();
+    private static FileWriter outFile;
+    private static FileWriter logFile;
     private static final Scanner userInput = new Scanner(System.in);
 
-    public static void main(String[] args) {
+    public static void Stimulation(ArrayList<Process> processList, int quantum) {
+        int counter = 0;
+        int clock = 0;
+        Queue<Integer> readyQueue;
+        Queue<Integer> iOQueue;
+        while (processList.isEmpty()) {
+            Process job = processList.get(counter);
+            while (job.getArrivalTime() != clock) {
+                try {
+                    logFile.write(clock + " : " + "no event");
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (job.getArrivalTime() == clock) {
 
+                System.out.println(clock + " : " + job.getProcessID() + "arrived at" + job.getArrivalTime());
+            }
+            counter++;
+            clock++;
+        }
+
+    }
+
+    public static void main(String[] args) throws IOException {
         File outputFile = getOutputFile();                             //first command takes the output file to write the 5 unit progress to
         File inputFile = getInputFile();                               //second command gets input file to read the processes from
         if (!inputFileChecked(inputFile)) {
-            System.out.println("Error: please check the data provided in the file. It must be all integers with value more than 0." +
-                    "Each line must have more than 3 integers and with a space in between. The number of CPU bursts must be same as the ones provided in the job." +
-                    "Since either or all conditions mentioned here are not satifsified," +
+            System.out.println("Error: please check the data provided in the file.\n It must be all integers with value more than 0.\n" +
+                    "Each line must have more than 3 integers and with a space in between.\n The number of CPU bursts must be same as the ones provided in the job.\n" +
+                    "Since either or all conditions mentioned here are not satifsified,\n" +
                     " Stimulation ends now.");
             System.exit(0);
         }
@@ -32,37 +59,19 @@ public class RoundRobinStimulation {
         for (int i = 0; i < str.size(); i++) {
             processList.add(new Process(str.get(i)));
         }
-        //******************************************************************************testing
-        Process job1 = processList.get(0);
-        Process job2 = processList.get(1);
-        Process job3 = processList.get(2);
-
-        System.out.println("job 1 arrival time : " + job1.getArrivalTime());
-        System.out.println("job 2 arrival time : " + job2.getArrivalTime());
-        System.out.println("job 3 arrival time : " + job3.getArrivalTime());
-
-        System.out.println("job 1 cpu bursts : " + job1.getNumOfCPUBursts());
-        System.out.println("job 2 cpu bursts : " + job2.getNumOfCPUBursts());
-        System.out.println("job 3 cpu bursts : " + job3.getNumOfCPUBursts());
-
-        System.out.println("job 1 cpu burst list : " + job1.getCpuburstList());
-        System.out.println("job 2 cpu burst list : " + job2.getCpuburstList());
-        System.out.println("job 3 cpu burst list : " + job3.getCpuburstList());
-        //******************************************************************************
+        outFile = new FileWriter(outputFile);
+        logFile = new FileWriter(outputLOGFile);
+        Stimulation(processList, quantum);
     }
 
-    public static File getOutputFile() {
-        File file = null;
+    public static File getOutputFile() throws IOException {
         String input = "";
-        try {
-            do {
-                System.out.println("Enter a name of the output file that doesnt exist.");
-                input = userInput.nextLine().replaceAll("\\s+", "");
-            } while (!new File(input + ".txt").createNewFile());
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        File file = null;
+        do {
+            System.out.println("Enter a name of the output file that doesnt exist.");
+            input = userInput.nextLine().replaceAll("\\s+", "");
+        } while (!new File(input + ".txt").createNewFile());
+        file = new File(input + ".txt");
         return file;
     }
 

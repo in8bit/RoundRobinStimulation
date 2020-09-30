@@ -27,7 +27,7 @@ public class Process {
         Random rand = new Random();
         String[] line = job.split(" ");
 
-        processID = rand.nextInt(100000);
+        processID = rand.nextInt(10000000);
         status = "New";
 
         arrivalTime = Integer.parseInt(line[0]);
@@ -43,7 +43,7 @@ public class Process {
         }
 
         currentCPUBurstTime = Integer.parseInt(line[2]);
-        currentIOBurstTime = 0;
+        currentIOBurstTime = 0; //not initialising for cases with only 1 cpu burst
 
         turnAroundTime = 0;
         readyQWaitTime = 0;
