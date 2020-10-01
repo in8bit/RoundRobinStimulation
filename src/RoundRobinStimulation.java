@@ -5,29 +5,90 @@ import java.io.IOException;
 import java.util.*;
 
 public class RoundRobinStimulation {
+    private static final Scanner userInput = new Scanner(System.in);
     static List<String> str = new ArrayList<String>();
     static PriorityQueue<Process> processQueue = new PriorityQueue<Process>();
     private static FileWriter outFile;
     private static FileWriter logFile;
-    private static final Scanner userInput = new Scanner(System.in);
 
     public static void Stimulation(PriorityQueue<Process> processQueue, int quantum) throws Exception {
         int clock = 0;
-        Queue<Integer> readyQueue;
-        Queue<Integer> iOQueue;
+        LinkedList<Integer> readyQueue = new LinkedList<Integer>();
+        LinkedList<Integer> IOQueue = new LinkedList<Integer>();
+        ArrayList<Integer> cpu = new ArrayList<Integer>();
+        ArrayList<Integer> IO = new ArrayList<Integer>();
         Iterator<Process> it = processQueue.iterator();
+
         while (it.hasNext()) {
             Process job = processQueue.poll();
             while (job.getArrivalTime() != clock) {
-                logFile.write(clock + " : " + "No event");
+                cpu.add(0);
+                IO.add(0);
+                readyQueue.add(0);
+                IOQueue.add(0);
+                logFile.write(clock + " : " + "No event. \n");
                 System.out.println(clock + " : " + "No event");
                 clock++;
             }
             if (job.getArrivalTime() == clock) {
-                System.out.println(clock + " : " + "At the start of " + clock + "job with process id : " + job.getProcessID() + "came");
+                cpu.add(0);
+                IO.add(0);
+                readyQueue.add(0);
+                IOQueue.add(0);
+                String status = job.getStatus();
+                switch (status) {
+                    case "newJob":
+                        if (cpu.get(job.getArrivalTime()) == 0) {
+                            int burst = job.getCurrentCPUBurstTime();
+                            if (quantum >= burst) {
+                                for (int i = job.getArrivalTime(); i == i + burst; i++) {
+                                    cpu.add(job.getProcessID());
+                                }
+                                System.out.println("CPU" + " : " + cpu.toString());
+                                //this condition means the cpu burst is finished. now if there is an ioburst then follow up there
+                                //update stats
+                                //write down to the file
+                            } else if (burst > quantum) {
+                                for (int i = job.getArrivalTime(); i == i + quantum; i++) {
+                                    cpu.add(i, job.getProcessID());
+                                }
+                                System.out.println("CPU" + " : " + cpu.toString());
+                                //this condition means the cpu burst is not finished. now the job has to move to ready queue with preempive state.
+                                //update stats
+                                //write down to the file
+                            }
+
+                        } else {
+                            readyQueue.add(job.getProcessID());
+                            //update stats
+                            //write down to the file
+                        }
+                        logFile.write(clock + " : " + job.getProcessID() + "\n");
+                        break;
+//                    case "ready":
+//                        System.out.println("ready");
+//                        break;
+//                    case "running":
+//                        System.out.println("running");
+//                        break;
+//                    case "blocked":
+//                        System.out.println("blocked");
+//                        break;
+//                    case "terminaed":
+//                        System.out.println("terminated");
+//                        break;
+//                    case "preempted":
+//                        System.out.println("preempted");
+//                        break;
+
+                }
+
+                System.out.println(clock + " : " + "At the start of " + clock + " job with process id : " + job.getProcessID() + " came ");
                 clock++;
             }
         }
+        outFile.flush();
+        outFile.close();
         logFile.flush();
         logFile.close();
     }

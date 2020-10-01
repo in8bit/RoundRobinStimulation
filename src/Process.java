@@ -3,31 +3,20 @@ import java.util.List;
 import java.util.Random;
 
 public class Process implements Comparable<Process> {
-    private int processID;
+    private final int processID;
     private String status;
-
-    private int arrivalTime;
-    private int numOfCPUBursts;
-    private List<Integer> cpuburstList = new ArrayList<Integer>();
-    private List<Integer> ioBurstList = new ArrayList<Integer>();
-
+    private final int arrivalTime;
+    private final int numOfCPUBursts;
+    private final List<Integer> cpuburstList = new ArrayList<Integer>();
+    private final List<Integer> ioBurstList = new ArrayList<Integer>();
     private int currentCPUBurstTime;
     private int currentIOBurstTime;
-
-    private int turnAroundTime;
-    private int readyQWaitTime;
-    private int ioWaitTime;
-
-    private int cpuUtilisation;
-    private int avgTurnAroundTime;
-    private int avgReadyQWaitTime;
-    private int avgIOWaitTime;
 
     public Process(String job) {
         Random rand = new Random();
         String[] line = job.split(" ");
 
-        processID = rand.nextInt(10000000);
+        processID = rand.nextInt(10000);
         status = "newJob";
 
         arrivalTime = Integer.parseInt(line[0]);
@@ -45,17 +34,7 @@ public class Process implements Comparable<Process> {
         currentCPUBurstTime = Integer.parseInt(line[2]);
         currentIOBurstTime = 0; //not initialising for cases with only 1 cpu burst
 
-        turnAroundTime = 0;
-        readyQWaitTime = 0;
-        ioWaitTime = 0;
-
-        cpuUtilisation = 0;
-        avgTurnAroundTime = 0;
-        avgReadyQWaitTime = 0;
-        avgIOWaitTime = 0;
-
     }
-
 
     public int getProcessID() {
         return processID;
@@ -100,63 +79,6 @@ public class Process implements Comparable<Process> {
     public void setCurrentIOBurstTime(int currentIOBurstTime) {
         this.currentIOBurstTime = currentIOBurstTime;
     }
-
-    public int getTurnAroundTime() {
-        return turnAroundTime;
-    }
-
-    public void setTurnAroundTime(int turnAroundTime) {
-        this.turnAroundTime = turnAroundTime;
-    }
-
-    public int getReadyQWaitTime() {
-        return readyQWaitTime;
-    }
-
-    public void setReadyQWaitTime(int readyQWaitTime) {
-        this.readyQWaitTime = readyQWaitTime;
-    }
-
-    public int getIoWaitTime() {
-        return ioWaitTime;
-    }
-
-    public void setIoWaitTime(int ioWaitTime) {
-        this.ioWaitTime = ioWaitTime;
-    }
-
-    public int getCpuUtilisation() {
-        return cpuUtilisation;
-    }
-
-    public void setCpuUtilisation(int cpuUtilisation) {
-        this.cpuUtilisation = cpuUtilisation;
-    }
-
-    public int getAvgTurnAroundTime() {
-        return avgTurnAroundTime;
-    }
-
-    public void setAvgTurnAroundTime(int avgTurnAroundTime) {
-        this.avgTurnAroundTime = avgTurnAroundTime;
-    }
-
-    public int getAvgReadyQWaitTime() {
-        return avgReadyQWaitTime;
-    }
-
-    public void setAvgReadyQWaitTime(int avgReadyQWaitTime) {
-        this.avgReadyQWaitTime = avgReadyQWaitTime;
-    }
-
-    public int getAvgIOWaitTime() {
-        return avgIOWaitTime;
-    }
-
-    public void setAvgIOWaitTime(int avgIOWaitTime) {
-        this.avgIOWaitTime = avgIOWaitTime;
-    }
-
 
     @Override
     public int compareTo(Process p) {
